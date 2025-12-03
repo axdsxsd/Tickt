@@ -1,3 +1,29 @@
+# Python
 __pycache__/
-.venv/
 *.pyc
+*.pyo
+*.pyd
+*.env
+.venv/
+env/
+*.sqlite3
+
+# PyCharm
+.idea/
+*.iml
+workspace.xml
+tasks.xml
+*.ipr
+*.iws
+
+# Логи
+*.log
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# MacOS
+.DS_Store
+
