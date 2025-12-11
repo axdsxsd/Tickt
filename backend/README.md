@@ -64,7 +64,7 @@ pip install -r backend/requirements.txt
 
 1. Настрой БД. 
    В папке backend/ создай файл:
-   backend/.env и скопируй в него содержимое из .env.example.
+   backend/.env и скопируй в него содержимое из .env.example измени необходимые данные.
 
 2. В терминале из корня проекта введи:
 ```powershell
