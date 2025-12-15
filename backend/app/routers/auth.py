@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends, HTTPException, status, Response, Cookie
 from sqlalchemy.orm import Session
 from ..database import SessionLocal
 from .. import crud, auth as auth_utils, schemas
-from datetime import timedelta
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -56,13 +55,6 @@ def logout(response: Response):
     response.delete_cookie("refresh_token")
     return {"msg": "Logged out"}
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 @router.post("/send_verification")
 def send_verification(email: str, db: Session = Depends(get_db)):
     user = crud.get_user_by_email(db, email)
@@ -76,7 +68,7 @@ def send_verification(email: str, db: Session = Depends(get_db)):
 def verify_user(user_id: int, code: str, db: Session = Depends(get_db)):
     if not crud.verify_code(db, user_id, code):
         raise HTTPException(status_code=400, detail="Invalid or expired code")
-    user = crud.get_user_by_email(db, user_id)
+    user = crud.get_user_by_id(db, user_id)
     user.is_verified = True
     db.commit()
     return {"msg": "User verified"}

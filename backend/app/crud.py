@@ -6,6 +6,9 @@ from . import models, auth
 def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
+def get_user_by_id(db: Session, user_id: int):
+    return db.query(models.User).filter(models.User.id == user_id).first()
+
 def create_user(db: Session, email: str, password: str):
     hashed = auth.hash_password(password)
     user = models.User(email=email, hashed_password=hashed)
