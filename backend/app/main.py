@@ -1,23 +1,20 @@
 from fastapi import FastAPI
+from .routers import todos, auth
+from .database import Base, engine
+from .config import settings
 
 app = FastAPI(
-    title="Tickt",
-    version="0.1",
-    description="Backend service for Tickt project."
+    title=settings.APP_NAME,
+    version=settings.APP_VERSION,
+    description=settings.APP_DESCRIPTION,
 )
 
-# Временное хранилище задач
-todos = []
+# Создаём таблицы
+Base.metadata.create_all(bind=engine)
+
+app.include_router(auth.router)
+app.include_router(todos.router)
 
 @app.get("/")
 def root():
-    return {"message": "Welcome to Tickt"}
-
-@app.get("/todos")
-def get_todos():
-    return {"todos": todos}
-
-@app.post("/todos")
-def add_todo(item: dict):
-    todos.append(item)
-    return {"message": "Todo added", "item": item}
+    return {"message": "Welcome to Tickt API"}
