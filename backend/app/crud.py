@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 import random, string
 from . import models, auth
+from .models import User, Image
 
 def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
@@ -13,6 +14,12 @@ def create_user(db: Session, email: str, password: str):
     hashed = auth.hash_password(password)
     user = models.User(email=email, hashed_password=hashed)
     db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+def set_user_avatar(db: Session, user: User, image: Image):
+    user.avatar_id = image.id
     db.commit()
     db.refresh(user)
     return user
@@ -57,14 +64,42 @@ def delete_todo(db: Session, todo_id: int):
     return db_todo
 
 # Verification code logic
-def create_verification_code(db: Session, user_id: int, email: str, minutes_valid: int = 15):
-    code = "".join(random.choices(string.digits, k=6))
-    expires_at = datetime.utcnow() + timedelta(minutes=minutes_valid)
-    vc = models.VerificationCode(user_id=user_id, value=email, code=code, expires_at=expires_at)
-    db.add(vc)
-    db.commit()
-    db.refresh(vc)
-    return vc
+def create_verification_code(db: Session, user_id: int, email: str) -> models.VerificationCode:
+    """
+    Создать или обновить верификационный код для пользователя
+    """
+    # Сначала пытаемся найти существующий код
+    existing_code = db.query(models.VerificationCode).filter(
+        models.VerificationCode.user_id == user_id
+    ).first()
+
+    # Генерируем новый код
+    code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+    expires_at = datetime.utcnow() + timedelta(minutes=15)
+
+    if existing_code:
+        # Обновляем существующий код
+        existing_code.code = code
+        existing_code.expires_at = expires_at
+        existing_code.created_at = datetime.utcnow()
+        db.commit()
+        db.refresh(existing_code)
+        return existing_code
+    else:
+        # Создаем новый код
+        db_code = models.VerificationCode(
+            user_id=user_id,
+            user_type="user",
+            verification_type="email",
+            value=email,
+            code=code,
+            expires_at=expires_at,
+            created_at=datetime.utcnow()
+        )
+        db.add(db_code)
+        db.commit()
+        db.refresh(db_code)
+        return db_code
 
 def verify_code(db: Session, user_id: int, code: str):
     vc = db.query(models.VerificationCode).filter(
