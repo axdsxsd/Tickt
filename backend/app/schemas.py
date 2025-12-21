@@ -28,12 +28,10 @@ class TodoBase(BaseModel):
 
 class TodoCreate(BaseModel):
     title: str
-    description: Optional[str] = None
     scheduled_date: Optional[datetime] = None
 
 class TodoUpdate(BaseModel):
     title: Optional[str] = None
-    description: Optional[str] = None
     is_completed: Optional[bool] = None
     scheduled_date: Optional[datetime] = None
 
