@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from ..deps import get_current_user, get_db
 from ..schemas import UserOut
-from ..models import User
+from ..models import User, Image
 
 from fastapi import UploadFile, File
 from pathlib import Path
@@ -22,28 +22,38 @@ def get_me(current_user: User = Depends(get_current_user)):
         avatar=avatar_path
     )
 
+from fastapi import UploadFile, File, Depends
+from pathlib import Path
+import shutil
+
 @router.post("/avatar")
 def upload_avatar(
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    BASE_DIR = Path(__file__).resolve().parent.parent
-    img_path = BASE_DIR / "images" / file.filename
+    BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+    images_dir = BASE_DIR / "images"
+    images_dir.mkdir(exist_ok=True)
+
+    img_path = images_dir / file.filename
 
     with open(img_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    # Создать запись в БД
-    from ..models import Image
-    image = Image(path=f"/images/{file.filename}", user_id=current_user.id)
+    image = Image(
+        path=f"/images/{file.filename}",
+        user_id=current_user.id
+    )
     db.add(image)
     db.commit()
     db.refresh(image)
 
-    # Обновить avatar_id
     current_user.avatar_id = image.id
     db.commit()
-    db.refresh(current_user)
 
-    return {"msg": "Avatar uploaded", "avatar": image.path}
+    return {
+        "msg": "Avatar uploaded",
+        "avatar": image.path
+    }

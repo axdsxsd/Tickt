@@ -35,14 +35,26 @@ class User(Base):
         cascade="all, delete"
     )
 
+    todos = relationship(
+        "Todo",
+        back_populates="user",
+        cascade="all, delete"
+    )
+
 class Todo(Base):
     __tablename__ = "todos"
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, nullable=False)
-    description = Column(String)
+
     is_completed = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+    scheduled_date = Column(DateTime, nullable=True)
+
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user = relationship("User")
+
 
 class Image(Base):
     __tablename__ = "images"

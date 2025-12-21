@@ -26,17 +26,22 @@ class TodoBase(BaseModel):
     title: str
     description: str | None = None
 
-class TodoCreate(TodoBase):
-    pass
+class TodoCreate(BaseModel):
+    title: str
+    description: Optional[str] = None
+    scheduled_date: Optional[datetime] = None
 
-class TodoUpdate(TodoBase):
-    is_completed: bool = False
+class TodoUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    is_completed: Optional[bool] = None
+    scheduled_date: Optional[datetime] = None
 
-class Todo(TodoBase):
+class TodoOut(BaseModel):
     id: int
+    title: str
     is_completed: bool
+    scheduled_date: Optional[datetime]
     created_at: datetime
 
-    model_config = {
-        "from_attributes": True
-    }
+    model_config = {"from_attributes": True}

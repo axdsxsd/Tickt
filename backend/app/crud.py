@@ -32,28 +32,37 @@ def authenticate_user(db: Session, email: str, password: str):
         return None
     return user
 
-def get_todos(db: Session):
-    return db.query(models.Todo).all()
+def get_todos(db: Session, user_id: int):
+    return db.query(models.Todo).filter(models.Todo.user_id == user_id).all()
 
 def get_todo(db: Session, todo_id: int):
     return db.query(models.Todo).filter(models.Todo.id == todo_id).first()
 
-def create_todo(db: Session, todo):
-    new_todo = models.Todo(**todo.dict())
+def create_todo(db: Session, todo, user_id: int):
+    new_todo = models.Todo(
+        **todo.dict(),
+        user_id=user_id
+    )
     db.add(new_todo)
     db.commit()
     db.refresh(new_todo)
     return new_todo
 
-def update_todo(db: Session, todo_id: int, todo):
-    db_todo = get_todo(db, todo_id)
-    if not db_todo:
+def update_todo(db: Session, todo_id: int, data, user_id: int):
+    todo = db.query(models.Todo).filter(
+        models.Todo.id == todo_id,
+        models.Todo.user_id == user_id
+    ).first()
+
+    if not todo:
         return None
-    for key, value in todo.dict().items():
-        setattr(db_todo, key, value)
+
+    for key, value in data.dict(exclude_unset=True).items():
+        setattr(todo, key, value)
+
     db.commit()
-    db.refresh(db_todo)
-    return db_todo
+    db.refresh(todo)
+    return todo
 
 def delete_todo(db: Session, todo_id: int):
     db_todo = get_todo(db, todo_id)
