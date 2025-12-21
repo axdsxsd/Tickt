@@ -64,9 +64,12 @@ def update_todo(db: Session, todo_id: int, data, user_id: int):
     db.refresh(todo)
     return todo
 
-def delete_todo(db: Session, todo_id: int):
+def delete_todo(db: Session, todo_id: int, user_id: int):
     db_todo = get_todo(db, todo_id)
     if not db_todo:
+        return None
+    # Проверка, что пользователь удаляет только свою задачу
+    if hasattr(db_todo, "user_id") and db_todo.user_id != user_id:
         return None
     db.delete(db_todo)
     db.commit()
