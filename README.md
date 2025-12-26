@@ -15,7 +15,7 @@
 - [🚀 Задачи](./Tasks.md)
 - [🎨 Дизайн](./design)
 - [⚛️ Frontend](./frontend/README.md)
-- [🧠 Backend](./backend/README.md) - подробная инструкция по запуску backend-сервера
+- [🧠 Backend](./backend/README.md)
 
 ## Стек технологий:
 
