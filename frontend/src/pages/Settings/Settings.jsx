@@ -24,6 +24,7 @@ const Settings = () => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
 
   const loadUserData = useCallback(async () => {
     try {
@@ -203,81 +204,29 @@ const Settings = () => {
                   </div>
                 )}
               </div>
-              <span className={styles.userName}>
-                {user?.email?.split("@")[0] || "Пользователь"}
-              </span>
-              <span className={styles.userEmail}>
-                {user?.email || "Нет email"}
-              </span>
-              {user?.is_verified === false && (
-                <span
-                  style={{
-                    fontSize: "12px",
-                    color: "#ffa500",
-                    opacity: 0.9,
-                  }}
-                >
-                  Email не подтвержден
-                </span>
-              )}
             </div>
           )}
           <div className={styles.settingsList}>
-            <div className={styles.settingsItem}>
-              <div className={styles.iconWrapper}>
-                <AiOutlineEdit size={20} />
-              </div>
-              <span className={styles.settingsText}>Редактировать профиль</span>
-              <AiOutlineRight size={20} className={styles.arrowIcon} />
-            </div>
-
             <div className={styles.mainSettings}>
-              <div className={styles.sectionHeader}>Основные настройки</div>
-
-              <div className={styles.settingsItem}>
-                <div className={styles.iconWrapper}>
-                  <AiOutlineGlobal size={20} />
-                </div>
-                <span className={styles.settingsText}>Язык</span>
-                <AiOutlineRight size={20} className={styles.arrowIcon} />
-              </div>
-
-              <div className={styles.settingsItem}>
-                <div className={styles.iconWrapper}>
-                  <AiOutlineInfoCircle size={20} />
-                </div>
-                <span className={styles.settingsText}>О приложении</span>
-                <AiOutlineRight size={20} className={styles.arrowIcon} />
-              </div>
-
-              <div className={styles.settingsItem}>
-                <div className={styles.iconWrapper}>
-                  <AiOutlineLock size={20} />
-                </div>
-                <span className={styles.settingsText}>
-                  Политика конфиденциальности
+              <div className={styles.grid}>
+                <span className={styles.rowTitle}>Имя</span>
+                <span className={styles.rowValue}>
+                  {user?.email?.split("@")[0] || "Пользователь"}
                 </span>
-                <AiOutlineRight size={20} className={styles.arrowIcon} />
-              </div>
-
-              <div className={styles.settingsItem}>
-                <div className={styles.iconWrapper}>
-                  <AiOutlineStar size={20} />
-                </div>
-                <span className={styles.settingsText}>Оценить приложение</span>
-                <AiOutlineRight size={20} className={styles.arrowIcon} />
-              </div>
-
-              <div className={styles.settingsItem}>
-                <div className={styles.iconWrapper}>
-                  <AiOutlineShareAlt size={20} />
-                </div>
-                <span className={styles.settingsText}>
-                  Поделиться приложением
+                <span className={styles.rowTitle}>Email</span>
+                <span className={styles.rowValue}>
+                  {user?.email || "Нет email"}
                 </span>
-                <AiOutlineRight size={20} className={styles.arrowIcon} />
+                <span className={styles.rowTitle}>Уведомления</span>
+                <div
+                  className={`${styles.switcher} ${
+                    notificationsEnabled ? styles.switcherActive : ""
+                  }`}
+                  onClick={() => setNotificationsEnabled(!notificationsEnabled)}
+                >
+                  <div className={styles.switcherToggle}></div>
+                </div>
               </div>
-
               <div
                 className={styles.settingsItem}
                 onClick={handleLogout}

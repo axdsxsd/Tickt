@@ -147,3 +147,60 @@
   width: 100%;
   z-index: 2;
 }
+
+.grid {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 12px;
+  justify-content: start;
+}
+.rowTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+.rowValue {
+  font-size: 14px;
+  font-weight: 400;
+  color: #fff;
+  opacity: 0.8;
+}
+
+.switcher {
+  width: 48px;
+  height: 26px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 13px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease, background 0.3s ease;
+  justify-self: end;
+}
+
+.switcher:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.switcherActive {
+  background: linear-gradient(to right, #489077, #5aa88c);
+}
+
+.switcherActive:hover {
+  background: linear-gradient(to right, #5aa88c, #489077);
+}
+
+.switcherToggle {
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.switcherActive .switcherToggle {
+  left: 25px;
+}
