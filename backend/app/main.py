@@ -16,9 +16,6 @@ app = FastAPI(
 BASE_DIR = Path(__file__).resolve().parent.parent
 app.mount("/images", StaticFiles(directory=BASE_DIR / "images"), name="images")
 
-# Создаём таблицы
-Base.metadata.create_all(bind=engine)
-
 app.include_router(auth.router)
 app.include_router(todos.router)
 app.include_router(users.router)

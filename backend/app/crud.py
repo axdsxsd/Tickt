@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import random, string
 from . import models, auth
 from .models import User, Image
@@ -40,7 +40,7 @@ def get_todo(db: Session, todo_id: int):
 
 def create_todo(db: Session, todo, user_id: int):
     new_todo = models.Todo(
-        **todo.dict(),
+        **todo.model_dump(),
         user_id=user_id
     )
     db.add(new_todo)
@@ -57,7 +57,7 @@ def update_todo(db: Session, todo_id: int, data, user_id: int):
     if not todo:
         return None
 
-    for key, value in data.dict(exclude_unset=True).items():
+    for key, value in data.model_dump(exclude_unset=True).items():
         setattr(todo, key, value)
 
     db.commit()
@@ -87,13 +87,13 @@ def create_verification_code(db: Session, user_id: int, email: str) -> models.Ve
 
     # Генерируем новый код
     code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
-    expires_at = datetime.utcnow() + timedelta(minutes=15)
+    expires_at = datetime.now(timezone.utc) + timedelta(minutes=15)
 
     if existing_code:
         # Обновляем существующий код
         existing_code.code = code
         existing_code.expires_at = expires_at
-        existing_code.created_at = datetime.utcnow()
+        existing_code.created_at = datetime.now(timezone.utc)
         db.commit()
         db.refresh(existing_code)
         return existing_code
@@ -106,7 +106,7 @@ def create_verification_code(db: Session, user_id: int, email: str) -> models.Ve
             value=email,
             code=code,
             expires_at=expires_at,
-            created_at=datetime.utcnow()
+            created_at = datetime.now(timezone.utc)
         )
         db.add(db_code)
         db.commit()

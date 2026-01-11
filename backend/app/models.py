@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from datetime import datetime
+from datetime import datetime, timezone
 from .database import Base
 
 class User(Base):
@@ -11,21 +11,21 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
     is_verified = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    avatar_id = Column(Integer, ForeignKey("images.id"), nullable=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    avatar_id = Column(Integer, ForeignKey("images.id", use_alter=True, name="fk_users_avatar"), nullable=True)
 
-    # Явно указываем foreign_keys для relationships
+    # Связь с изображениями пользователя
     images = relationship(
         "Image",
         back_populates="user",
-        foreign_keys="[Image.user_id]"  # Добавьте эту строку
+        foreign_keys="[Image.user_id]"
     )
 
     avatar = relationship(
         "Image",
         foreign_keys=[avatar_id],
         uselist=False,
-        post_update=True  # Может потребоваться для циклических зависимостей
+        post_update=True  # нужно для разрешения циклической зависимости
     )
 
     verification_code = relationship(
@@ -41,30 +41,29 @@ class User(Base):
         cascade="all, delete"
     )
 
-class Todo(Base):
-    __tablename__ = "todos"
-
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, nullable=False)
-
-    is_completed = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-
-    scheduled_date = Column(DateTime, nullable=True)
-
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    user = relationship("User")
-
 
 class Image(Base):
     __tablename__ = "images"
 
     id = Column(Integer, primary_key=True)
     path = Column(String, nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"))
+    user_id = Column(Integer, ForeignKey("users.id", use_alter=True, name="fk_images_user"), nullable=True)
 
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     user = relationship("User", back_populates="images", foreign_keys=[user_id])
+
+
+class Todo(Base):
+    __tablename__ = "todos"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, nullable=False)
+    is_completed = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    scheduled_date = Column(DateTime, nullable=True)
+
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user = relationship("User", back_populates="todos")
+
 
 class VerificationCode(Base):
     __tablename__ = "verification_codes"
@@ -72,11 +71,10 @@ class VerificationCode(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), unique=True)
     user_type = Column(String, default="user")
-
     verification_type = Column(String, default="email")
     value = Column(String)
     code = Column(String)
     expires_at = Column(DateTime)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     user = relationship("User", back_populates="verification_code")

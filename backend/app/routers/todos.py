@@ -30,23 +30,18 @@ def read_todos(
 ):
     return crud.get_todos(db, current_user.id)
 
-
-@router.get("/{todo_id}", response_model=list[schemas.TodoOut])
-def read_todo(todo_id: int, db: Session = Depends(get_db)):
-    todo = crud.get_todo(db, todo_id)
-    if not todo:
-        raise HTTPException(status_code=404, detail="Todo not found")
-    return todo
-
-
-@router.post("/", response_model=list[schemas.TodoOut])
-def create(
-    todo: schemas.TodoCreate,
+@router.get("/{todo_id}", response_model=schemas.TodoOut)
+def read_todo(
+    todo_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
-    return crud.create_todo(db, todo, current_user.id)
+    todo = crud.get_todo(db, todo_id)
 
+    if not todo or todo.user_id != current_user.id:
+        raise HTTPException(status_code=404, detail="Todo not found")
+
+    return todo
 
 @router.put("/{todo_id}", response_model=schemas.TodoOut)
 def update(

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 from typing import Optional
 
@@ -23,15 +23,14 @@ class Token(BaseModel):
     token_type: str = "bearer"
 
 class TodoBase(BaseModel):
-    title: str
-    description: str | None = None
-
-class TodoCreate(BaseModel):
-    title: str
+    title: str = Field(..., min_length=1, max_length=255)  # теперь не пустая строка
     scheduled_date: Optional[datetime] = None
 
+class TodoCreate(TodoBase):
+    pass  # наследуем title с валидацией
+
 class TodoUpdate(BaseModel):
-    title: Optional[str] = None
+    title: Optional[str] = Field(None, min_length=1, max_length=255)  # если передан, то не пустой
     is_completed: Optional[bool] = None
     scheduled_date: Optional[datetime] = None
 
