@@ -1,8 +1,7 @@
 import axios from "axios";
 
-// В режиме разработки используем прокси через Vite (/api)
-// В продакшене можно использовать полный URL
-const API_URL = import.meta.env.DEV ? "/api" : "http://127.0.0.1:8000";
+// Прямой URL к бэкенду на easypanel (и локально, и в продакшене)
+const API_URL = "https://army-tickt-backend.3zasdl.easypanel.host";
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
