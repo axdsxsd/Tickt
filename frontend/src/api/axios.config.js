@@ -1,8 +1,8 @@
 import axios from "axios";
 
 // В режиме разработки используем прокси через Vite (/api)
-// В продакшене можно использовать полный URL
-const API_URL = import.meta.env.DEV ? "/api" : "http://127.0.0.1:8000";
+// В продакшене используем переменную окружения или /api
+const API_URL = import.meta.env.VITE_API_URL || "/api";
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
