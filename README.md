@@ -16,7 +16,7 @@
 - [🎨 Дизайн](./design)
 - [⚛️ Frontend](./frontend/README.md)
 - [🧠 Backend](./backend/README.md)
-- [✔️ПРЕЗЕНТАЦИЯ ДЛЯ ЗАЩИТЫ](./design/Презентация%Tickt.pptx)
+- [✔️ПРЕЗЕНТАЦИЯ ДЛЯ ЗАЩИТЫ(https://github.com/axdsxsd/Tickt/raw/refs/heads/design/design/%D0%9F%D1%80%D0%B5%D0%B7%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D1%8F%20Tickt.pptx)
 
 ## Стек технологий:
 
