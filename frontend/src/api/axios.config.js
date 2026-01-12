@@ -1,8 +1,10 @@
 import axios from "axios";
 
 // В режиме разработки используем прокси через Vite (/api)
-// В продакшене используем переменную окружения или /api
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+// В продакшене используем прямой URL к бэкенду
+const API_URL = import.meta.env.DEV
+  ? "/api"
+  : "https://army-tickt-backend.3zasdl.easypanel.host";
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
