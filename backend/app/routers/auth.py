@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Response, Cookie
 from sqlalchemy.orm import Session
 from ..database import SessionLocal
 from .. import crud, auth as auth_utils, schemas
+from ..email import send_email
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -60,9 +61,16 @@ def send_verification(email: str, db: Session = Depends(get_db)):
     user = crud.get_user_by_email(db, email)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+
     vc = crud.create_verification_code(db, user.id, user.email)
-    # TODO: отправить vc.code на email (через SMTP или внешнюю почту)
-    return {"msg": "Verification code sent", "code": vc.code}  # для теста выводим код прямо
+
+    send_email(
+        to_email=user.email,
+        subject="Tickt — подтверждение почты",
+        body=f"Ваш код подтверждения: {vc.code}"
+    )
+
+    return {"msg": "Verification code sent"}
 
 @router.post("/verify")
 def verify_user(user_id: int, code: str, db: Session = Depends(get_db)):

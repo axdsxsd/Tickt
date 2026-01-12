@@ -1,13 +1,41 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import styles from "../SignUp/SignUp.module.css";
 import logo from "/assets/logo.png";
+import { login } from "../../api/auth";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      await login(email, password);
+      toast.success("Вход выполнен успешно!");
+      navigate("/");
+    } catch (err) {
+      if (err.response?.status === 401) {
+        toast.error("Неверный email или пароль");
+      } else if (err.response?.data?.detail) {
+        toast.error(err.response.data.detail);
+      } else {
+        toast.error("Произошла ошибка при входе. Попробуйте снова.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -17,7 +45,7 @@ const SignIn = () => {
         <span className={styles.description}>
           Введите ваш email и пароль для входа в приложение
         </span>
-        <div className={styles.form}>
+        <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.formItem}>
             <span className={styles.formItemTitle}>EMAIL</span>
             <input
@@ -25,6 +53,9 @@ const SignIn = () => {
               type="email"
               className={styles.formItemInput}
               placeholder="kapibarachillovaya@mail.ru"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
           <div className={styles.formItem}>
@@ -36,6 +67,9 @@ const SignIn = () => {
                 className={styles.formItemInput}
                 placeholder="123123123"
                 style={{ width: "100%" }}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
               <button
                 type="button"
@@ -51,8 +85,14 @@ const SignIn = () => {
               </button>
             </div>
           </div>
-        </div>
-        <button className={styles.submitButton}>Вход</button>
+          <button
+            type="submit"
+            className={styles.submitButton}
+            disabled={isLoading}
+          >
+            {isLoading ? "Вход..." : "Вход"}
+          </button>
+        </form>
         <img src={logo} alt="logo" className={styles.logo} />
         <span className={styles.footerText}>
           Нет аккаунта?{" "}
