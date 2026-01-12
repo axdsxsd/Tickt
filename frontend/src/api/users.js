@@ -36,7 +36,8 @@ export const getAvatarUrl = (avatarPath) => {
   if (!avatarPath) return null;
   // Если путь уже полный URL, возвращаем как есть
   if (avatarPath.startsWith("http")) return avatarPath;
-  // Иначе формируем полный URL
-  const baseUrl = import.meta.env.DEV ? "/api" : "http://127.0.0.1:8000";
+  // В dev режиме используем прокси vite (относительный путь)
+  // В продакшене используем API_URL из конфига
+  const baseUrl = import.meta.env.DEV ? "" : API_URL;
   return `${baseUrl}${avatarPath}`;
 };
