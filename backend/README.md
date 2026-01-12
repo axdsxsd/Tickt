@@ -133,3 +133,37 @@ CRUD операций с задачами
  - Использование новых методов (model_dump)
 
 Остальные предупреждения — из зависимостей (Starlette, python-jose) и их исправлять не нужно.
+
+---
+
+## Запуск через Docker (рекомендуемый способ)
+
+### Требования
+- Docker
+- Docker Compose
+
+### Запуск
+
+1. Склонировать репозиторий:
+```powershell
+git clone <repo_url>
+cd tickt
+```
+
+2. Создать файл окружения:
+```powershell
+cp backend/.env.example backend/.env
+```
+
+3. Запустить контейнеры:
+```powershell
+docker-compose up --build
+```
+
+4. Backend будет доступен по адресу:   
+http://localhost:8000/docs
+
+Остановка контейнеров:
+```powershell
+docker-compose down
+```
