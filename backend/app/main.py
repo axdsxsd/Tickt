@@ -15,13 +15,18 @@ app = FastAPI(
 # Настройка CORS
 # ======================
 origins = [
-    "https://other-tickt-backend.zmoif7.easypanel.host",  # актуальный продовый origin
-    "http://localhost:5173",  # dev фронтенд локально (если нужно)
+    "http://localhost:5173",  # Vite dev
+    "http://127.0.0.1:5173",
+    "http://localhost:4173",  # Vite preview
+    "http://127.0.0.1:4173",
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
+    # Разрешаем продовые фронтенд-домены easypanel.
+    # Важно: при allow_credentials=True нельзя использовать allow_origins=["*"].
+    allow_origin_regex=r"^https://[a-zA-Z0-9-]+\.easypanel\.host$",
     allow_credentials=True,
     allow_methods=["*"],  # GET, POST, PUT, DELETE
     allow_headers=["*"],  # все заголовки
