@@ -15,6 +15,7 @@ app = FastAPI(
 # Настройка CORS
 # ======================
 origins = [
+    "https://other-tickt-frontend.zmoif7.easypanel.host",  # текущий продовый фронтенд
     "http://localhost:5173",  # Vite dev
     "http://127.0.0.1:5173",
     "http://localhost:4173",  # Vite preview
