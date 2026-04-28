@@ -4,6 +4,8 @@ from .routers import todos, auth, users
 from .config import settings
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
+from .database import Base, engine
+from . import models
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -45,6 +47,11 @@ app.mount("/images", StaticFiles(directory=BASE_DIR / "images"), name="images")
 app.include_router(auth.router)
 app.include_router(todos.router)
 app.include_router(users.router)
+
+@app.on_event("startup")
+def create_tables() -> None:
+    # Для новых/пустых БД создаем все таблицы из SQLAlchemy моделей.
+    Base.metadata.create_all(bind=engine)
 
 @app.get("/")
 def root():
