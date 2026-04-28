@@ -15,7 +15,7 @@ app = FastAPI(
 # Настройка CORS
 # ======================
 origins = [
-    "https://army-tickt-frontend.3zasdl.easypanel.host",  # твой продовый фронтенд
+    "https://other-tickt-backend.zmoif7.easypanel.host",  # актуальный продовый origin
     "http://localhost:5173",  # dev фронтенд локально (если нужно)
 ]
 

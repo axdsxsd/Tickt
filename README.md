@@ -5,8 +5,8 @@
 
 ## 🌐 Развернутое приложение
 
-- **Frontend:** [https://army-tickt-frontend.3zasdl.easypanel.host/](https://army-tickt-frontend.3zasdl.easypanel.host/)
-- **Backend API:** [https://army-tickt-backend.3zasdl.easypanel.host](https://army-tickt-backend.3zasdl.easypanel.host)
+- **Frontend:** [https://other-tickt-backend.zmoif7.easypanel.host](https://other-tickt-backend.zmoif7.easypanel.host)
+- **Backend API:** [https://other-tickt-backend.zmoif7.easypanel.host](https://other-tickt-backend.zmoif7.easypanel.host)
 
 ## Команда:
 
