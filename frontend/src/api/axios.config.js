@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Прямой URL к бэкенду на easypanel (и локально, и в продакшене)
-const API_URL = "https://army-tickt-backend.3zasdl.easypanel.host";
+const API_URL = "https://other-tickt-backend.zmoif7.easypanel.host";
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
@@ -38,7 +38,7 @@ axiosInstance.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Интерцептор для ответов - автоматическое обновление токена при 401
@@ -127,7 +127,7 @@ axiosInstance.interceptors.response.use(
       console.error(
         "Ошибка ответа:",
         error.response.status,
-        error.response.data
+        error.response.data,
       );
     } else if (error.request) {
       console.error("Ошибка запроса:", error.request);
@@ -136,7 +136,7 @@ axiosInstance.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default axiosInstance;
